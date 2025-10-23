@@ -21,11 +21,20 @@ export default class IntegrityMonitor {
   }
 
   /**
-   * Check if verification is enabled
-   * @returns {boolean} True if verification is enabled
+   * Active status for health checks and gating logic
+   * (Consolidated per PR feedback; replaces isVerificationEnabled)
+   * @returns {boolean}
+   */
+  isActive() {
+    return this.verificationEnabled;
+  }
+
+  /**
+   * DEPRECATED: kept for backward compatibility with existing tests.
+   * Use isActive() instead.
    */
   isVerificationEnabled() {
-    return this.verificationEnabled;
+    return this.isActive();
   }
 
   /**
