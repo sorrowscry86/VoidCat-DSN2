@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  # Omega Clone - Coordinator (Port 3000)
+  omega:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.omega
+    container_name: ryuzu-omega-sanctuary
+    environment:
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3000:3001"
+    volumes:
+      - sanctuary-workspace:/tmp/sanctuary-workspace
+    networks:
+      - sanctuary-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Beta Clone - Analyzer (Port 3002)
+  beta:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.beta
+    container_name: ryuzu-beta-sanctuary
+    environment:
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3002:3001"
+    volumes:
+      - sanctuary-workspace:/tmp/sanctuary-workspace
+    networks:
+      - sanctuary-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - omega
+
+  # Gamma Clone - Architect (Port 3003)
+  gamma:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gamma
+    container_name: ryuzu-gamma-sanctuary
+    environment:
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3003:3001"
+    volumes:
+      - sanctuary-workspace:/tmp/sanctuary-workspace
+    networks:
+      - sanctuary-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - omega
+
+  # Delta Clone - Tester (Port 3004)
+  delta:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.delta
+    container_name: ryuzu-delta-sanctuary
+    environment:
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3004:3001"
+    volumes:
+      - sanctuary-workspace:/tmp/sanctuary-workspace
+    networks:
+      - sanctuary-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - omega
+
+  # Sigma Clone - Communicator (Port 3005)
+  sigma:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.sigma
+    container_name: ryuzu-sigma-sanctuary
+    environment:
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3005:3001"
+    volumes:
+      - sanctuary-workspace:/tmp/sanctuary-workspace
+    networks:
+      - sanctuary-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - omega
+
+# Shared volumes for artifact storage
+volumes:
+  sanctuary-workspace:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /tmp/sanctuary-workspace
+
+# Internal network for clone communication
+networks:
+  sanctuary-network:
+    driver: bridge
