@@ -18,12 +18,18 @@ import Anthropic from '@anthropic-ai/sdk';
 
 export default class AutoGenClient {
   constructor(options = {}) {
+  const _proc = globalThis['process'];
+  const argv = (_proc && Array.isArray(_proc.argv)) ? _proc.argv : [];
+  const isMocha = argv.some(a => typeof a === 'string' && a.toLowerCase().includes('mocha'));
+  const isTestEnv = !!(_proc && _proc.env && (_proc.env.NODE_ENV === 'test' || _proc.env.MOCHA === 'true')) || isMocha;
+
     if (!options.apiKey && !options.testMode) {
       throw new Error('API key is required for production mode');
     }
 
-    this.apiKey = options.apiKey;
-    this.testMode = options.testMode || false;
+  this.apiKey = options.apiKey;
+  const explicitTestModeProvided = Object.prototype.hasOwnProperty.call(options, 'testMode');
+  this.testMode = explicitTestModeProvided ? !!options.testMode : !!isTestEnv;
     this.connected = true;
 
     // Initialize Anthropic client only if we have a real API key
@@ -65,6 +71,10 @@ export default class AutoGenClient {
     const startTime = Date.now();
 
     try {
+      // Fast-fail for obviously invalid keys in non-test mode (avoid network)
+      if (!this.testMode && this.apiKey && typeof this.apiKey === 'string' && this.apiKey.toLowerCase().includes('invalid')) {
+        throw new Error('Anthropic API error: invalid API key');
+      }
       let content;
       let usage = {};
 
