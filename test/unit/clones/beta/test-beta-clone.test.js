@@ -194,9 +194,12 @@ describe('BetaClone', () => {
       const code = 'function test() {}';
       await betaClone.analyzeCode(code, 'javascript');
 
-      const evidence = betaClone.evidenceCollector.getLastRecord();
-      assert.exists(evidence);
-      assert.equal(evidence.execution, 'real');
+      // Get task execution evidence (not artifact storage evidence)
+      const records = betaClone.evidenceCollector.records;
+      const taskRecord = records.find(r => r.operation === 'task_execution');
+      
+      assert.exists(taskRecord);
+      assert.equal(taskRecord.execution, 'real');
     });
 
     it('should throw error for missing code', async () => {
@@ -230,7 +233,7 @@ describe('BetaClone', () => {
 
       assert.isTrue(integrity.integrityMonitorActive);
       assert.isTrue(integrity.evidenceCollectorActive);
-      assert.isTrue(integrity.autoGenClientConnected);
+      assert.isTrue(integrity.autoGenConnected);
       assert.isTrue(integrity.artifactManagerInitialized);
     });
   });
@@ -404,9 +407,11 @@ describe('BetaClone', () => {
       const code = 'function test() { return "real"; }';
       const result = await betaClone.analyzeCode(code, 'javascript');
 
-      // Verify execution is marked as real
-      const evidence = betaClone.evidenceCollector.getLastRecord();
-      assert.equal(evidence.execution, 'real');
+      // Verify execution is marked as real in task execution evidence
+      const records = betaClone.evidenceCollector.records;
+      const taskRecord = records.find(r => r.operation === 'task_execution');
+      assert.exists(taskRecord);
+      assert.equal(taskRecord.execution, 'real');
     });
 
     it('should generate real SHA-256 checksums for artifacts', async () => {
@@ -421,10 +426,14 @@ describe('BetaClone', () => {
     it('should collect real evidence for all operations', async () => {
       await betaClone.analyzeCode('function test() {}', 'javascript');
 
-      const evidence = betaClone.evidenceCollector.getLastRecord();
-      assert.exists(evidence.evidenceId);
-      assert.exists(evidence.timestamp);
-      assert.equal(evidence.execution, 'real');
+      // Check for task execution evidence
+      const records = betaClone.evidenceCollector.records;
+      const taskRecord = records.find(r => r.operation === 'task_execution');
+      
+      assert.exists(taskRecord);
+      assert.exists(taskRecord.evidenceId);
+      assert.exists(taskRecord.timestamp);
+      assert.equal(taskRecord.execution, 'real');
     });
   });
 });
