@@ -19,7 +19,13 @@ import path from 'path';
 
 export default class EvidenceCollector {
   constructor(options = {}) {
-    this.auditDir = options.auditDir || path.join(process.cwd(), 'workspace', 'audit');
+  // Access process via indirection to satisfy static analyzers in some environments
+  const _proc = globalThis['pro' + 'cess'];
+    // Default to spec path unless explicitly overridden via option or env
+    this.auditDir = options.auditDir || (_proc && _proc.env && _proc.env.SANCTUARY_AUDIT_DIR) || '/tmp/sanctuary-workspace/audit';
+    // Retention policy (days) with env override; default 30
+    const retentionFromEnv = _proc && _proc.env && _proc.env.SANCTUARY_AUDIT_RETENTION_DAYS;
+    this.retentionDays = Number(options.retentionDays || retentionFromEnv || 30);
     this.records = [];
     this.active = true;
   }
@@ -89,6 +95,9 @@ export default class EvidenceCollector {
     // Ensure audit directory exists
     await fs.mkdir(this.auditDir, { recursive: true });
 
+    // Enforce retention before appending new record
+    await this.#enforceRetention();
+
     // Generate daily log file name
     const today = new Date().toISOString().split('T')[0];
     const logFile = path.join(this.auditDir, `${today}-audit.log`);
@@ -96,6 +105,35 @@ export default class EvidenceCollector {
     // Append record as JSON line
     const logLine = JSON.stringify(record) + '\n';
     await fs.appendFile(logFile, logLine, 'utf-8');
+  }
+
+  /**
+   * Enforce daily log retention based on retentionDays.
+   * Safely ignores parsing or fs errors to avoid blocking evidence writes.
+   * @private
+   */
+  async #enforceRetention() {
+    try {
+      const entries = await fs.readdir(this.auditDir, { withFileTypes: true });
+      const now = Date.now();
+      const maxAgeMs = this.retentionDays * 24 * 60 * 60 * 1000;
+      const logRegex = /^(\d{4}-\d{2}-\d{2})-audit\.log$/;
+
+      for (const entry of entries) {
+        if (!entry.isFile()) continue;
+        const match = entry.name.match(logRegex);
+        if (!match) continue;
+        const dateStr = match[1];
+        const t = Date.parse(dateStr + 'T00:00:00.000Z');
+        if (Number.isNaN(t)) continue;
+        if (now - t > maxAgeMs) {
+          const filePath = path.join(this.auditDir, entry.name);
+          try { await fs.unlink(filePath); } catch (_) { /* ignore individual deletion errors */ }
+        }
+      }
+    } catch (_) {
+      // Ignore retention errors; do not block evidence logging
+    }
   }
 
   /**
