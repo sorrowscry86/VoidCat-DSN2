@@ -23,7 +23,8 @@ export default class RyuzuClone {
     // Clone identity
     this.role = config.role || 'Unknown';
     this.specialization = config.specialization || 'General purpose';
-    this.port = config.port || process.env.PORT || 3001;
+  const _proc = globalThis['process'];
+  this.port = config.port || (_proc && _proc.env && _proc.env.PORT) || 3001;
     this.systemPrompt = config.systemPrompt || this._getDefaultSystemPrompt();
     
     // Phase 0 components (Integrity-First Foundation)
@@ -32,7 +33,7 @@ export default class RyuzuClone {
     
     // Determine test mode and API key
     const testMode = config.testMode || false;
-    const apiKey = testMode ? 'test-key' : process.env.ANTHROPIC_API_KEY;
+  const apiKey = testMode ? 'test-key' : ((_proc && _proc.env && _proc.env.ANTHROPIC_API_KEY) || undefined);
     
     this.autoGenClient = new AutoGenClient({
       apiKey,
@@ -212,6 +213,7 @@ Core principle: NO SIMULATIONS LAW - All outputs must be 100% real, verifiable, 
       integrity: {
         autoGenConnected: this.autoGenClient.isConnected(),
         evidenceCollectorActive: this.evidenceCollector.isActive(),
+        integrityMonitorActive: this.integrityMonitor.isActive(),
         artifactManagerInitialized: this.artifactManager.isInitialized()
       },
       metrics: {
@@ -259,7 +261,7 @@ Core principle: NO SIMULATIONS LAW - All outputs must be 100% real, verifiable, 
    * @returns {Promise<object>} Artifact manifest
    */
   async storeArtifact(type, content, metadata = {}) {
-    const manifest = this.artifactManager.storeArtifact(type, content, {
+    const manifest = await this.artifactManager.storeArtifact(type, content, {
       ...metadata,
       clone: this.role,
       timestamp: new Date().toISOString()
@@ -285,7 +287,7 @@ Core principle: NO SIMULATIONS LAW - All outputs must be 100% real, verifiable, 
    * @returns {Promise<object>} Artifact with manifest
    */
   async retrieveArtifact(artifactId, options = {}) {
-    const result = this.artifactManager.retrieveArtifact(artifactId, options);
+    const result = await this.artifactManager.retrieveArtifact(artifactId, options);
 
     // Record evidence
     this.evidenceCollector.record({
