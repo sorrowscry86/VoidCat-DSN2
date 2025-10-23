@@ -1,0 +1,59 @@
+{
+  "name": "voidcat-dsn",
+  "version": "2.0.0",
+  "description": "Digital Sanctuary Network - Distributed AI Clone Coordination System",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha 'test/**/*.test.js'",
+    "test:unit": "c8 mocha 'test/unit/**/*.test.js'",
+    "test:integration": "c8 mocha 'test/integration/**/*.test.js'",
+    "test:e2e": "mocha 'test/e2e/**/*.test.js'",
+    "test:watch": "mocha --watch 'test/**/*.test.js'",
+    "test:coverage": "c8 --reporter=html --reporter=text mocha 'test/**/*.test.js'",
+    "lint": "echo 'Linting not configured yet'",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart",
+    "health-check": "node scripts/health-check.js",
+    "start:omega": "node src/clones/omega/index.js",
+    "start:beta": "node src/clones/beta/index.js",
+    "start:gamma": "node src/clones/gamma/index.js",
+    "start:delta": "node src/clones/delta/index.js",
+    "start:sigma": "node src/clones/sigma/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@anthropic-ai/sdk": "^0.27.0",
+    "axios": "^1.6.0",
+    "uuid": "^9.0.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.0",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.7",
+    "supertest": "^6.3.3"
+  },
+  "keywords": [
+    "ai",
+    "distributed-systems",
+    "claude",
+    "autogen",
+    "mcp",
+    "docker",
+    "microservices"
+  ],
+  "author": "VoidCat RDC Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voidcat-rdc/sanctuary-network.git"
+  }
+}

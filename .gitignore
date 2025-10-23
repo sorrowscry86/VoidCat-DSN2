@@ -1,0 +1,8 @@
+
+
+#Ignore cursor AI rules
+.cursor\rules\codacy.mdc
+
+
+#Ignore insiders AI rules
+.github\instructions\codacy.instructions.md
