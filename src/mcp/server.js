@@ -87,8 +87,8 @@ export class SanctuaryMCPServer {
               description: 'Programming language (e.g., JavaScript, Python)' 
             },
             context: { 
-              type: 'string', 
-              description: 'Additional context or specific concerns' 
+              type: 'object', 
+              description: 'Additional context or specific concerns (optional key-value pairs)' 
             }
           },
           required: ['code']
@@ -127,8 +127,8 @@ export class SanctuaryMCPServer {
               description: 'Test framework (e.g., mocha, jest, pytest)' 
             },
             context: { 
-              type: 'string', 
-              description: 'Additional context' 
+              type: 'object', 
+              description: 'Additional context (optional key-value pairs)' 
             }
           },
           required: ['code']
@@ -339,7 +339,7 @@ export class SanctuaryMCPServer {
       {
         code: args.code,
         language: args.language,
-        context: args.context
+        context: args.context || {}
       },
       { timeout: 30000 }
     );
@@ -375,8 +375,8 @@ export class SanctuaryMCPServer {
       `http://localhost:${CLONE_PORTS.delta}/generate-tests`,
       {
         code: args.code,
-        testFramework: args.testFramework,
-        context: args.context
+        framework: args.testFramework || 'mocha', // Map testFramework to framework
+        context: args.context || {}
       },
       { timeout: 30000 }
     );
