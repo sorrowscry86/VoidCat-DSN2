@@ -82,7 +82,7 @@ export default class ContextEngineer {
    * @returns {object} Quality scores
    */
   _calculateQuality(data) {
-    const { objective, artifactManifests, essentialData, constraints } = data;
+    const { objective, artifactManifests, essentialData, constraints: _constraints } = data;
 
     // 1. Objective Clarity (0-100)
     const objectiveClarity = this._scoreObjectiveClarity(objective);

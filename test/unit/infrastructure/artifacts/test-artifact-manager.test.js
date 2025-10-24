@@ -9,7 +9,6 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import fs from 'fs';
-import path from 'path';
 import ArtifactManager from '../../../../src/infrastructure/artifacts/ArtifactManager.js';
 
 describe('ArtifactManager', () => {
@@ -49,7 +48,7 @@ describe('ArtifactManager', () => {
         fs.rmSync(newDir, { recursive: true, force: true });
       }
       
-      const manager = new ArtifactManager(newDir);
+      const _manager = new ArtifactManager(newDir);
       assert.isTrue(fs.existsSync(newDir));
       
       // Cleanup

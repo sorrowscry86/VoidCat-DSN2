@@ -132,7 +132,7 @@ export default class ArtifactManager {
       throw new Error(
         `Checksum mismatch for artifact ${artifactId}. ` +
         `Expected: ${manifest.checksum}, Got: ${calculatedChecksum}. ` +
-        `Artifact may be corrupted.`
+        'Artifact may be corrupted.'
       );
     }
     

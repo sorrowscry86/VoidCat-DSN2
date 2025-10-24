@@ -25,7 +25,7 @@ describe('EvidenceCollector', () => {
     // Cleanup test audit directory
     try {
       await fs.rm(testAuditDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });

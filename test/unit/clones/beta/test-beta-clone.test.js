@@ -405,7 +405,7 @@ describe('BetaClone', () => {
   describe('NO SIMULATIONS LAW Compliance', () => {
     it('should use real code analysis (not mocked)', async () => {
       const code = 'function test() { return "real"; }';
-      const result = await betaClone.analyzeCode(code, 'javascript');
+      const _result = await betaClone.analyzeCode(code, 'javascript');
 
       // Verify execution is marked as real in task execution evidence
       const records = betaClone.evidenceCollector.records;
