@@ -73,12 +73,23 @@ const VALIDATION_CHECKS = [
     name: 'Docker containers running',
     check() {
       try {
-        const output = execSync('docker-compose ps --services --filter "status=running"', {
-          encoding: 'utf-8',
-          cwd: process.cwd()
-        });
+        // Try docker-compose v2 syntax first, fallback to v1
+        let output;
+        try {
+          output = execSync('docker compose ps --services --filter "status=running"', {
+            encoding: 'utf-8',
+            cwd: process.cwd(),
+            stdio: ['pipe', 'pipe', 'pipe']
+          });
+        } catch {
+          // Fallback to v1 syntax
+          output = execSync('docker-compose ps --services --filter "status=running"', {
+            encoding: 'utf-8',
+            cwd: process.cwd()
+          });
+        }
         
-        const runningServices = output.trim().split('\n').filter(s => s);
+        const runningServices = output.trim().split('\n').filter(s => s.length > 0);
         const expectedServices = ['omega', 'beta', 'gamma', 'delta', 'sigma'];
         
         for (const service of expectedServices) {

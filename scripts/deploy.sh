@@ -57,11 +57,15 @@ echo "✓ Waiting for clones to initialize (30 seconds)..."
 sleep 30
 
 echo ""
-echo "✓ Running health checks..."
+echo "✓ Running health checks (with retries)..."
 echo ""
 
-# Run health check
-if npm run health-check; then
+# Run health check with retries
+RETRIES=3
+RETRY_DELAY=10
+
+for i in $(seq 1 $RETRIES); do
+  if npm run health-check; then
     echo ""
     echo "✅ Deployment complete!"
     echo ""
@@ -78,12 +82,20 @@ if npm run health-check; then
     echo "   - Restart:       docker-compose restart"
     echo "   - Health check:  npm run health-check"
     echo ""
-else
-    echo ""
-    echo "⚠️  Some clones may not be healthy yet."
-    echo "   Give them a few more seconds to initialize, then run:"
-    echo "   npm run health-check"
-    echo ""
-    echo "   To view logs: docker-compose logs -f"
-    echo ""
-fi
+    exit 0
+  fi
+  
+  if [ $i -lt $RETRIES ]; then
+    echo "⏳ Health check attempt $i failed. Waiting ${RETRY_DELAY}s before retry..."
+    sleep $RETRY_DELAY
+  fi
+done
+
+echo ""
+echo "⚠️  Health checks failed after $RETRIES attempts."
+echo "   This may be normal if clones need more initialization time."
+echo "   You can manually verify with: npm run health-check"
+echo ""
+echo "   To view logs: docker-compose logs -f"
+echo ""
+exit 1

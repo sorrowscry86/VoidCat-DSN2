@@ -7,10 +7,16 @@ package-lock.json
 .git
 .gitignore
 
-# Documentation
-*.md
+# Documentation (exclude most, keep essential)
 docs/
 .specstory/
+CLAUDE.md
+IMPLEMENTATION*.md
+PHASE*.md
+
+# Keep these essential docs:
+# - README.md (needed for container documentation)
+# - DEPLOYMENT.md (deployment reference)
 
 # Tests
 test/

@@ -236,7 +236,28 @@ export class SanctuaryMCPServer {
   }
 
   async handleToolCall(request) {
-    const { name, arguments: args } = request.params;
+    // Validate request structure
+    if (!request?.params) {
+      return {
+        content: [{
+          type: 'text',
+          text: 'Error: Invalid request - missing params'
+        }],
+        isError: true
+      };
+    }
+    
+    if (!request.params.name) {
+      return {
+        content: [{
+          type: 'text',
+          text: 'Error: Invalid request - missing tool name'
+        }],
+        isError: true
+      };
+    }
+    
+    const { name, arguments: args = {} } = request.params;
 
     try {
       switch (name) {

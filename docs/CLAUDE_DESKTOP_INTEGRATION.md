@@ -296,7 +296,7 @@ In `~/.claude_desktop_config.json`:
 
 ## Examples in Action
 
-See [examples/mcp-workflows.md](examples/mcp-workflows.md) for detailed workflow examples.
+Examples will be added in a future documentation update. For now, refer to the tool usage patterns above and the troubleshooting guide.
 
 ## Support
 
@@ -310,4 +310,4 @@ If you encounter issues:
 
 - Review [DEPLOYMENT.md](../DEPLOYMENT.md) for deployment details
 - Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues
-- Explore example workflows in `examples/` directory
+- Refer to tool usage patterns in this guide for practical examples
