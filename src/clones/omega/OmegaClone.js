@@ -8,6 +8,7 @@
 import express from 'express';
 import axios from 'axios';
 import RyuzuClone from '../RyuzuClone.js';
+import InputValidator from '../../infrastructure/validation/InputValidator.js';
 
 export default class OmegaClone extends RyuzuClone {
   constructor(config = {}) {
@@ -34,12 +35,24 @@ Never simulate or estimate task completion.`,
       ...config
     });
 
-    // Clone registry with default ports
+    // Clone registry with configurable ports
     this.cloneRegistry = {
-      beta: { port: 3002, specialization: 'Code analysis, debugging, security' },
-      gamma: { port: 3003, specialization: 'System design, architecture' },
-      delta: { port: 3004, specialization: 'Testing, QA' },
-      sigma: { port: 3005, specialization: 'Documentation, communication' }
+      beta: {
+        port: process.env.BETA_PORT || 3002,
+        specialization: 'Code analysis, debugging, security'
+      },
+      gamma: {
+        port: process.env.GAMMA_PORT || 3003,
+        specialization: 'System design, architecture'
+      },
+      delta: {
+        port: process.env.DELTA_PORT || 3004,
+        specialization: 'Testing, QA'
+      },
+      sigma: {
+        port: process.env.SIGMA_PORT || 3005,
+        specialization: 'Documentation, communication'
+      }
     };
 
     // Initialize Express app
@@ -63,8 +76,8 @@ Never simulate or estimate task completion.`,
     // Task execution endpoint
     this.app.post('/task', async (req, res) => {
       try {
-        const { prompt, context, sessionId } = req.body;
-        const result = await this.executeTask(prompt, context, sessionId);
+        const validated = InputValidator.validateTaskRequest(req.body);
+        const result = await this.executeTask(validated.prompt, validated.context, validated.sessionId);
         res.json(result);
       } catch (error) {
         res.status(500).json({
@@ -78,13 +91,13 @@ Never simulate or estimate task completion.`,
     // Multi-clone orchestration endpoint (specialized)
     this.app.post('/orchestrate', async (req, res) => {
       try {
-        const { objective, targetClone, artifactManifests, essentialData, sessionId } = req.body;
+        const validated = InputValidator.validateOrchestrateRequest(req.body);
         const result = await this.orchestrate(
-          objective,
-          targetClone,
-          artifactManifests,
-          essentialData,
-          sessionId
+          validated.objective,
+          validated.targetClone,
+          validated.artifactManifests,
+          validated.essentialData,
+          validated.sessionId
         );
         res.json(result);
       } catch (error) {
@@ -111,8 +124,13 @@ Never simulate or estimate task completion.`,
     // Delegate task endpoint
     this.app.post('/delegate', async (req, res) => {
       try {
-        const { targetClone, prompt, context, sessionId } = req.body;
-        const result = await this.delegateTask(targetClone, prompt, context, sessionId);
+        const validated = InputValidator.validateDelegateRequest(req.body);
+        const result = await this.delegateTask(
+          validated.targetClone,
+          validated.prompt,
+          validated.context,
+          validated.sessionId
+        );
         res.json(result);
       } catch (error) {
         res.status(500).json({

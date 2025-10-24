@@ -7,6 +7,7 @@
 
 import express from 'express';
 import RyuzuClone from '../RyuzuClone.js';
+import InputValidator from '../../infrastructure/validation/InputValidator.js';
 
 export default class DeltaClone extends RyuzuClone {
   constructor(config = {}) {
@@ -54,8 +55,8 @@ Never provide mock or simulated test results.`,
     // Task execution endpoint
     this.app.post('/task', async (req, res) => {
       try {
-        const { prompt, context, sessionId } = req.body;
-        const result = await this.executeTask(prompt, context, sessionId);
+        const validated = InputValidator.validateTaskRequest(req.body);
+        const result = await this.executeTask(validated.prompt, validated.context, validated.sessionId);
         res.json(result);
       } catch (error) {
         res.status(500).json({
@@ -69,8 +70,8 @@ Never provide mock or simulated test results.`,
     // Test generation endpoint (specialized)
     this.app.post('/generate-tests', async (req, res) => {
       try {
-        const { code, testFramework, context } = req.body;
-        const result = await this.generateTests(code, testFramework, context);
+        const validated = InputValidator.validateGenerateTestsRequest(req.body);
+        const result = await this.generateTests(validated.code, validated.framework, validated.context);
         res.json(result);
       } catch (error) {
         res.status(500).json({

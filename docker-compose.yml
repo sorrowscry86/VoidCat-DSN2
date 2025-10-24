@@ -133,10 +133,6 @@ services:
 volumes:
   sanctuary-workspace:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /tmp/sanctuary-workspace
 
 # Internal network for clone communication
 networks:

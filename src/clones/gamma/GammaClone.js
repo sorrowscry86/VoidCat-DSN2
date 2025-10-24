@@ -7,6 +7,7 @@
 
 import express from 'express';
 import RyuzuClone from '../RyuzuClone.js';
+import InputValidator from '../../infrastructure/validation/InputValidator.js';
 
 export default class GammaClone extends RyuzuClone {
   constructor(config = {}) {
@@ -54,8 +55,8 @@ or unverified architectural guidance.`,
     // Task execution endpoint
     this.app.post('/task', async (req, res) => {
       try {
-        const { prompt, context, sessionId } = req.body;
-        const result = await this.executeTask(prompt, context, sessionId);
+        const validated = InputValidator.validateTaskRequest(req.body);
+        const result = await this.executeTask(validated.prompt, validated.context, validated.sessionId);
         res.json(result);
       } catch (error) {
         res.status(500).json({
@@ -69,8 +70,12 @@ or unverified architectural guidance.`,
     // Architecture design endpoint (specialized)
     this.app.post('/design', async (req, res) => {
       try {
-        const { requirements, constraints, context } = req.body;
-        const result = await this.designArchitecture(requirements, constraints, context);
+        const validated = InputValidator.validateDesignRequest(req.body);
+        const result = await this.designArchitecture(
+          validated.requirements,
+          validated.constraints,
+          validated.context
+        );
         res.json(result);
       } catch (error) {
         res.status(500).json({
