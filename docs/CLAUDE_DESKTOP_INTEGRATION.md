@@ -25,7 +25,24 @@ If you want the fastest path on Windows:
 
   This writes `%USERPROFILE%\.claude_desktop_config.json` with the correct absolute path.
 
-2. Open this workspace in VS Code. We include a workspace setting that wires Claude Code to the MCP server automatically via `.vscode/settings.json`.
+2. For Claude Code (VS Code), you can either:
+   - Copy `claude_code_settings.example.json` into your user settings (Settings JSON) or
+   - Create `.vscode/settings.json` in this workspace with the same content to auto-wire the MCP server
+
+   Example content:
+
+   ```json
+   {
+     "claude.mcpServers": {
+       "sanctuary": {
+         "command": "node",
+         "args": ["${workspaceFolder}/src/mcp/server.js"],
+         "env": { "NODE_ENV": "production" },
+         "transport": "stdio"
+       }
+     }
+   }
+   ```
 
 3. Restart Claude Desktop and/or VS Code to pick up the configuration.
 

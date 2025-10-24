@@ -1,0 +1,14 @@
+{
+  "claude.mcpServers": {
+    "sanctuary": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/src/mcp/server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "transport": "stdio"
+    }
+  }
+}
