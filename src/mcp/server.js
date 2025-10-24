@@ -483,7 +483,17 @@ export class SanctuaryMCPServer {
 }
 
 // Start server if run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Check if this module is the entry point (works on Windows and Unix)
+const isMainModule = () => {
+  const scriptPath = process.argv[1];
+  if (!scriptPath) return true; // Default to starting if no argv[1]
+  
+  const fileUrl = import.meta.url;
+  const normalizedScript = scriptPath.replace(/\\/g, '/');
+  return fileUrl.includes(normalizedScript) || fileUrl.endsWith(normalizedScript);
+};
+
+if (isMainModule()) {
   const server = new SanctuaryMCPServer();
   server.start().catch(error => {
     console.error('Failed to start MCP server:', error);
