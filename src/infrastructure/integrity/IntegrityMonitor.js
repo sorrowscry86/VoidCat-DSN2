@@ -29,6 +29,14 @@ export default class IntegrityMonitor {
   }
 
   /**
+   * Check if IntegrityMonitor is active
+   * @returns {boolean} True if active and monitoring
+   */
+  isActive() {
+    return this.verificationEnabled;
+  }
+
+  /**
    * Calculate SHA-256 checksum for content
    * 
    * @param {string} content - Content to hash

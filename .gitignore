@@ -10,11 +10,12 @@ coverage/
 dist/
 build/
 
-# Workspace artifacts
+# Workspace artifacts (only at root level)
 workspace/
-artifacts/
-manifests/
-audit/
+/artifacts/
+/manifests/
+/audit/
+/test-workspace/
 
 # Environment
 .env
