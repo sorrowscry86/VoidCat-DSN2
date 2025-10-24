@@ -108,6 +108,20 @@ verified patterns, and empirical evidence. Never provide speculative or estimate
         });
       }
     });
+
+    // Audit log endpoint
+    this.app.get('/audit', async (req, res) => {
+      try {
+        const limit = parseInt(req.query.limit) || 10;
+        const auditLog = this.evidenceCollector.getAuditLog(limit);
+        res.json({ success: true, auditLog, clone: this.role });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    });
   }
 
   /**

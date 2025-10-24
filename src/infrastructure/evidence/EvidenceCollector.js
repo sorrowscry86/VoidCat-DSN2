@@ -125,4 +125,17 @@ export default class EvidenceCollector {
       endTime: records[records.length - 1].timestamp
     };
   }
+
+  /**
+   * Get audit log entries
+   * 
+   * @param {number} [limit=10] - Maximum number of entries to return
+   * @returns {Array} Recent audit log entries
+   */
+  getAuditLog(limit = 10) {
+    // Return most recent records, newest first
+    return this.records
+      .slice(-limit)
+      .reverse();
+  }
 }
