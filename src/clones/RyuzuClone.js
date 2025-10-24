@@ -91,11 +91,21 @@ Core principle: NO SIMULATIONS LAW - All outputs must be 100% real, verifiable, 
       // Enhance prompt with system prompt and context
       const enhancedPrompt = this._enhancePrompt(prompt, context);
 
+      // Role-based maxTokens defaults for each clone
+      const roleDefaults = {
+        'Beta': 4096,   // Code analysis needs more
+        'Gamma': 2048,  // Architecture is moderate
+        'Delta': 5000,  // Test generation needs most
+        'Sigma': 3072,  // Documentation is lengthy
+        'Omega': 2048   // Coordination is moderate
+      };
+
       // Execute real AI query (NO SIMULATIONS LAW)
       const response = await this.autoGenClient.query({
         model: 'claude-3-5-sonnet-20241022',
         prompt: enhancedPrompt,
-        stream: false
+        stream: false,
+        maxTokens: (context && context.maxTokens) || roleDefaults[this.role] || 2048
       });
 
       // Calculate execution time
