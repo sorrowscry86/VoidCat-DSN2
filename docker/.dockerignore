@@ -1,0 +1,54 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+
+# Git
+.git
+.gitignore
+
+# Documentation (exclude most, keep essential)
+docs/
+.specstory/
+CLAUDE.md
+IMPLEMENTATION*.md
+PHASE*.md
+
+# Keep these essential docs:
+# - README.md (needed for container documentation)
+# - DEPLOYMENT.md (deployment reference)
+
+# Tests
+test/
+coverage/
+.c8rc
+
+# IDE and editor files
+.vscode/
+.cursor/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
