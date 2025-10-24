@@ -1,0 +1,28 @@
+# Dockerfile for Gamma Clone (Architect)
+FROM node:18-slim
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY src/ ./src/
+
+RUN mkdir -p /tmp/sanctuary-workspace/artifacts && \
+    mkdir -p /tmp/sanctuary-workspace/manifests && \
+    mkdir -p /tmp/sanctuary-workspace/audit
+
+ENV NODE_ENV=production
+ENV PORT=3001
+
+EXPOSE 3001
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+CMD ["node", "src/clones/gamma/index.js"]
