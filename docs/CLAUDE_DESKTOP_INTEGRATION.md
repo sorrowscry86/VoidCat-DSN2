@@ -13,6 +13,24 @@ VoidCat-DSN v2.0 provides a Model Context Protocol (MCP) server that enables sea
 
 ## Setup Instructions
 
+### Quick Setup (Windows)
+
+If you want the fastest path on Windows:
+
+1. From the repo root, run the setup script to configure Claude Desktop automatically:
+
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\setup-mcp.ps1
+  ```
+
+  This writes `%USERPROFILE%\.claude_desktop_config.json` with the correct absolute path.
+
+2. Open this workspace in VS Code. We include a workspace setting that wires Claude Code to the MCP server automatically via `.vscode/settings.json`.
+
+3. Restart Claude Desktop and/or VS Code to pick up the configuration.
+
+---
+
 ### 1. Install MCP SDK Dependencies
 
 The MCP server requires the Model Context Protocol SDK:
