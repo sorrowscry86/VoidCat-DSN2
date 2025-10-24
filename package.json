@@ -15,7 +15,7 @@
     "test:e2e": "mocha 'test/e2e/**/*.test.js'",
     "test:watch": "mocha --watch 'test/**/*.test.js'",
     "test:coverage": "c8 --reporter=html --reporter=text mocha 'test/**/*.test.js'",
-    "lint": "echo 'Linting not configured yet'",
+    "lint": "eslint .",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -29,16 +29,18 @@
     "start:sigma": "node src/clones/sigma/index.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "@anthropic-ai/sdk": "^0.27.0",
     "axios": "^1.6.0",
+    "express": "^4.18.2",
     "uuid": "^9.0.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
     "c8": "^8.0.0",
-    "mocha": "^10.2.0",
     "chai": "^4.3.7",
+    "eslint": "^9.38.0",
+    "mocha": "^10.2.0",
     "supertest": "^6.3.3"
   },
   "keywords": [

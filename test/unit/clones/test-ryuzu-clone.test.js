@@ -154,7 +154,7 @@ describe('RyuzuClone', () => {
       // Force an error by passing invalid data to AutoGenClient
       try {
         await clone.executeTask(null); // Will fail validation
-      } catch (error) {
+      } catch (_error) {
         const evidence = clone.evidenceCollector.getLastRecord();
         expect(evidence.execution).to.equal('failed');
         expect(evidence.error).to.exist;
@@ -166,7 +166,7 @@ describe('RyuzuClone', () => {
       
       try {
         await clone.executeTask(null); // Will fail
-      } catch (error) {
+      } catch (_error) {
         expect(clone.metrics.errors).to.equal(initialErrors + 1);
       }
     });
