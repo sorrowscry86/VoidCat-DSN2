@@ -210,6 +210,7 @@ Core principle: NO SIMULATIONS LAW - All outputs must be 100% real, verifiable, 
       specialization: this.specialization,
       timestamp: new Date().toISOString(),
       integrity: {
+        integrityMonitorActive: this.integrityMonitor.isActive(),
         autoGenConnected: this.autoGenClient.isConnected(),
         evidenceCollectorActive: this.evidenceCollector.isActive(),
         artifactManagerInitialized: this.artifactManager.isInitialized()
