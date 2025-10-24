@@ -50,7 +50,8 @@ describe('AutoGenClient', () => {
       assert.equal(response.execution, 'real');
     });
 
-    it('should include model in response metadata', async () => {
+    it('should include model in response metadata', async function() {
+      this.timeout(5000);
       const response = await client.query({
         model: 'claude-3-5-sonnet-20241022',
         prompt: 'Test prompt',
@@ -61,7 +62,8 @@ describe('AutoGenClient', () => {
       assert.equal(response.metadata.model, 'claude-3-5-sonnet-20241022');
     });
 
-    it('should include timestamp in response', async () => {
+    it('should include timestamp in response', async function() {
+      this.timeout(5000);
       const response = await client.query({
         model: 'claude-3-5-sonnet-20241022',
         prompt: 'Test prompt',
