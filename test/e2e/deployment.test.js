@@ -32,7 +32,7 @@ describe('E2E: Sanctuary Network Deployment', function() {
         
         expect(response.status).to.equal(200);
         expect(response.data).to.have.property('status');
-        expect(response.data.status).to.equal('running');
+        expect(response.data.status).to.equal('active'); // Clones return 'active' not 'running'
         expect(response.data).to.have.property('role', clone.name);
       });
     });
@@ -47,8 +47,8 @@ describe('E2E: Sanctuary Network Deployment', function() {
       
       expect(response.status).to.equal(200);
       expect(response.data).to.have.property('clones');
-      expect(response.data.clones).to.be.an('array');
-      expect(response.data.clones).to.have.lengthOf(5);
+      expect(response.data.clones).to.be.an('object'); // clones is object, not array
+      expect(Object.keys(response.data.clones)).to.have.lengthOf(4); // beta, gamma, delta, sigma
     });
 
     it('should allow Omega to orchestrate task to Beta', async () => {
@@ -62,7 +62,7 @@ describe('E2E: Sanctuary Network Deployment', function() {
             language: 'JavaScript'
           }
         },
-        { timeout: 10000 }
+        { timeout: 30000 } // Increased timeout for orchestration + AI
       );
       
       expect(response.status).to.equal(200);
@@ -142,7 +142,7 @@ describe('E2E: Sanctuary Network Deployment', function() {
         {
           requirements: 'Simple API with authentication'
         },
-        { timeout: 10000 }
+        { timeout: 30000 } // Increased timeout for real AI calls
       );
       
       expect(response.status).to.equal(200);
@@ -156,7 +156,7 @@ describe('E2E: Sanctuary Network Deployment', function() {
           code: 'class Calculator { add(a, b) { return a + b; } }',
           testFramework: 'mocha'
         },
-        { timeout: 10000 }
+        { timeout: 30000 } // Increased timeout for real AI calls
       );
       
       expect(response.status).to.equal(200);

@@ -6,13 +6,36 @@
 - Docker 20.10+ installed
 - Docker Compose 2.0+ installed
 - Anthropic API key
-- Ports 3000-3005 available
+- Ports 3000-3005 available (or configure custom ports - see below)
 
-### 1. Set Environment Variables
+### 1. Configure Environment
+
+Create a `.env` file from the template:
 
 ```bash
-# Set your Anthropic API key
-export ANTHROPIC_API_KEY="your-api-key-here"
+# Copy example file
+cp .env.example .env
+
+# Edit .env and set your API key
+# ANTHROPIC_API_KEY=your-api-key-here
+
+# (Optional) Customize ports if defaults are in use:
+# OMEGA_PORT=3000
+# BETA_PORT=3002
+# GAMMA_PORT=3003
+# DELTA_PORT=3004
+# SIGMA_PORT=3005
+```
+
+**PowerShell:**
+```powershell
+# Set API key in environment
+$env:ANTHROPIC_API_KEY = "your-api-key-here"
+
+# (Optional) Set custom ports
+$env:OMEGA_PORT = "4000"
+$env:BETA_PORT = "4002"
+# etc...
 ```
 
 ### 2. Build and Start All Clones
@@ -44,16 +67,31 @@ curl http://localhost:3005/health  # Sigma (Communicator)
 
 ## Clone Architecture
 
-### Port Allocation
-| Clone | Role | External Port | Internal Port |
-|-------|------|---------------|---------------|
-| Omega | Coordinator | 3000 | 3001 |
-| Beta | Analyzer | 3002 | 3001 |
-| Gamma | Architect | 3003 | 3001 |
-| Delta | Tester | 3004 | 3001 |
-| Sigma | Communicator | 3005 | 3001 |
+### Port Allocation (Configurable)
+| Clone | Role | Default External Port | Internal Port | Env Variable |
+|-------|------|----------------------|---------------|--------------|
+| Omega | Coordinator | 3000 | 3001 | `OMEGA_PORT` |
+| Beta | Analyzer | 3002 | 3001 | `BETA_PORT` |
+| Gamma | Architect | 3003 | 3001 | `GAMMA_PORT` |
+| Delta | Tester | 3004 | 3001 | `DELTA_PORT` |
+| Sigma | Communicator | 3005 | 3001 | `SIGMA_PORT` |
 
-**Note:** All clones use internal port 3001 (via `process.env.PORT`). Docker maps this to unique external ports.
+**Key Points:**
+- All clones use **internal port 3001** (via `process.env.PORT`)
+- External ports are **fully configurable** via environment variables
+- If an external port is in use, set the corresponding env var to an available port
+- Docker maps external → internal (e.g., `${OMEGA_PORT:-3000}:3001`)
+
+**Example - Custom Ports:**
+```bash
+# If ports 3000-3005 are in use, use 4000-4005 instead
+export OMEGA_PORT=4000
+export BETA_PORT=4002
+export GAMMA_PORT=4003
+export DELTA_PORT=4004
+export SIGMA_PORT=4005
+docker-compose up -d
+```
 
 ### Network Configuration
 - **Network Name:** `sanctuary-network`

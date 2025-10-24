@@ -124,7 +124,7 @@ Before you start implementing:
 - [ ] Node.js 18+ installed (`node --version`)
 - [ ] npm installed (`npm --version`)
 - [ ] Anthropic API key ready (`echo $ANTHROPIC_API_KEY`)
-- [ ] Ports 3000-3005 available (or change in docker-compose)
+- [ ] Ports 3000-3005 available (or set custom ports via .env - see DEPLOYMENT.md)
 - [ ] Docker installed (optional, needed for Phase 3)
 - [ ] Workspace directory created: `mkdir -p workspace/{artifacts,manifests,audit,temp}`
 

@@ -11,8 +11,12 @@ services:
       - PORT=3001
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - NODE_ENV=production
+      - BETA_HOST=ryuzu-beta-sanctuary
+      - GAMMA_HOST=ryuzu-gamma-sanctuary
+      - DELTA_HOST=ryuzu-delta-sanctuary
+      - SIGMA_HOST=ryuzu-sigma-sanctuary
     ports:
-      - "3000:3001"
+      - "${OMEGA_PORT:-3000}:3001"
     volumes:
       - sanctuary-workspace:/tmp/sanctuary-workspace
     networks:
@@ -36,7 +40,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - NODE_ENV=production
     ports:
-      - "3002:3001"
+      - "${BETA_PORT:-3002}:3001"
     volumes:
       - sanctuary-workspace:/tmp/sanctuary-workspace
     networks:
@@ -62,7 +66,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - NODE_ENV=production
     ports:
-      - "3003:3001"
+      - "${GAMMA_PORT:-3003}:3001"
     volumes:
       - sanctuary-workspace:/tmp/sanctuary-workspace
     networks:
@@ -88,7 +92,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - NODE_ENV=production
     ports:
-      - "3004:3001"
+      - "${DELTA_PORT:-3004}:3001"
     volumes:
       - sanctuary-workspace:/tmp/sanctuary-workspace
     networks:
@@ -114,7 +118,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - NODE_ENV=production
     ports:
-      - "3005:3001"
+      - "${SIGMA_PORT:-3005}:3001"
     volumes:
       - sanctuary-workspace:/tmp/sanctuary-workspace
     networks:

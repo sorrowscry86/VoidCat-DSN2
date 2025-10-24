@@ -35,22 +35,26 @@ Never simulate or estimate task completion.`,
       ...config
     });
 
-    // Clone registry with configurable ports
+    // Clone registry with configurable ports and hostnames
     this.cloneRegistry = {
       beta: {
         port: process.env.BETA_PORT || 3002,
+        host: process.env.BETA_HOST || 'localhost', // Use 'ryuzu-beta-sanctuary' in Docker
         specialization: 'Code analysis, debugging, security'
       },
       gamma: {
         port: process.env.GAMMA_PORT || 3003,
+        host: process.env.GAMMA_HOST || 'localhost',
         specialization: 'System design, architecture'
       },
       delta: {
         port: process.env.DELTA_PORT || 3004,
+        host: process.env.DELTA_HOST || 'localhost',
         specialization: 'Testing, QA'
       },
       sigma: {
         port: process.env.SIGMA_PORT || 3005,
+        host: process.env.SIGMA_HOST || 'localhost',
         specialization: 'Documentation, communication'
       }
     };
@@ -170,6 +174,19 @@ Never simulate or estimate task completion.`,
         });
       }
     });
+
+    // List all artifacts endpoint
+    this.app.get('/artifacts', async (req, res) => {
+      try {
+        const artifacts = this.artifactManager.listArtifacts();
+        res.json({ success: true, artifacts });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    });
   }
 
   /**
@@ -262,7 +279,9 @@ Never simulate or estimate task completion.`,
     }
 
     const cloneInfo = this.cloneRegistry[targetClone];
-    const cloneUrl = `http://localhost:${cloneInfo.port}/task`;
+    // Use internal port 3001 for Docker, external port for host
+    const clonePort = process.env.NODE_ENV === 'production' ? 3001 : cloneInfo.port;
+    const cloneUrl = `http://${cloneInfo.host}:${clonePort}/task`;
 
     try {
       const response = await axios.post(cloneUrl, {
@@ -277,7 +296,7 @@ Never simulate or estimate task completion.`,
 
     } catch (error) {
       if (error.code === 'ECONNREFUSED') {
-        throw new Error(`Clone ${targetClone} is not running on port ${cloneInfo.port}`);
+        throw new Error(`Clone ${targetClone} is not running on port ${clonePort}`);
       }
       throw new Error(`Failed to delegate to ${targetClone}: ${error.message}`);
     }
@@ -297,8 +316,9 @@ Never simulate or estimate task completion.`,
     // Check each clone's health
     for (const [cloneName, cloneInfo] of Object.entries(this.cloneRegistry)) {
       try {
+        const clonePort = process.env.NODE_ENV === 'production' ? 3001 : cloneInfo.port;
         const response = await axios.get(
-          `http://localhost:${cloneInfo.port}/health`,
+          `http://${cloneInfo.host}:${clonePort}/health`,
           { timeout: 5000 }
         );
         status.clones[cloneName] = {
